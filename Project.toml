@@ -1,6 +1,6 @@
 name = "Sentencize"
 uuid = "7dcf698f-69e3-471c-af7e-711815da818c"
-authors = ["Astariul <remondnicola@gmail.com> and contributors"]
+authors = ["Astariul <remondnicola@gmail.com> and all contributors"]
 version = "0.1.0"
 
 [compat]
