@@ -3,7 +3,7 @@
 
 **Text to sentence splitter using heuristic algorithm.**
 
-This module is a port of the [python package `sentence-splitter`]().
+This module is a port of the [python package `sentence-splitter`](https://github.com/berkmancenter/mediacloud-sentence-splitter).
 
 The module allows splitting of text paragraphs into sentences. It is based on scripts developed by Philipp Koehn and Josh Schroeder for processing the [Europarl corpus](http://www.statmt.org/europarl/).
 
@@ -19,7 +19,7 @@ println(sen)
 # ["This is a paragraph.", "It contains several sentences.", "\"But why,\" you ask?"]
 ```
 
-You can specify another language than english :
+You can specify another language than English:
 
 ```julia
 sen = Sentencize.split_sentence("Brookfield Office Properties Inc. (« BOPI »), dont les actifs liés aux immeubles directement...", lang="fr")
@@ -33,7 +33,7 @@ You can specify your own non-breaking prefixes file:
 sen = Sentencize.split_sentence("This is an example.", prefix_file="my_prefixes.txt", lang=missing)
 ```
 
-Or even pass the prefixes as a dictionary :
+Or even pass the prefixes as a dictionary:
 
 ```julia
 sen = Sentencize.split_sentence("This is another example. Another sentence.", prefixes=Dict("example" => Sentencize.default))
