@@ -1,5 +1,6 @@
 <h1 align="center">Sentencize.jl</h1>
-<p align="center"><a href="https://github.com/astariul/Sentencize.jl/actions"><img src="https://github.com/astariul/Sentencize.jl/workflows/tests/badge.svg" alt="test status" /></a></p>
+
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://astariul.github.io/Sentencize.jl/stable/) [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://astariul.github.io/Sentencize.jl/dev/) [![Build Status](https://github.com/astariul/Sentencize.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/astariul/Sentencize.jl/actions/workflows/CI.yml?query=branch%3Amain) [![Coverage](https://codecov.io/gh/astariul/Sentencize.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/astariul/Sentencize.jl) [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 **Text to sentence splitter using heuristic algorithm.**
 

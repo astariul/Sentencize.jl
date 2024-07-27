@@ -1,1 +1,10 @@
-Manifest.toml
+*.jl.*.cov
+*.jl.cov
+*.jl.mem
+/Manifest.toml
+/docs/Manifest.toml
+/docs/build/
+
+# Mac specific
+.DS_Store
+.vscode/**
