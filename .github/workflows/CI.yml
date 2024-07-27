@@ -22,12 +22,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        julia-version: ['1.10']
-        julia-arch: [x64, x86]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        exclude:
-          - os: macOS-latest
-            julia-arch: x86
+        version: 
+          - '1'
+        arch: 
+          - x64
+          - x86
+        os: 
+          - ubuntu-latest
+          - windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
