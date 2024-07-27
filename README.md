@@ -2,11 +2,11 @@
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://astariul.github.io/Sentencize.jl/stable/) [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://astariul.github.io/Sentencize.jl/dev/) [![Build Status](https://github.com/astariul/Sentencize.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/astariul/Sentencize.jl/actions/workflows/CI.yml?query=branch%3Amain) [![Coverage](https://codecov.io/gh/astariul/Sentencize.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/astariul/Sentencize.jl) [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
-**Text to sentence splitter using heuristic algorithm.**
+**Text to sentence splitter using a heuristic algorithm.**
 
-This module is a port of the [python package `sentence-splitter`](https://github.com/berkmancenter/mediacloud-sentence-splitter).
+This module is a port of the [Python package `sentence-splitter`](https://github.com/berkmancenter/mediacloud-sentence-splitter).
 
-The module allows splitting of text paragraphs into sentences. It is based on scripts developed by Philipp Koehn and Josh Schroeder for processing the [Europarl corpus](http://www.statmt.org/europarl/).
+The module allows the splitting of text paragraphs into sentences. It is based on scripts developed by Philipp Koehn and Josh Schroeder for processing the [Europarl corpus](http://www.statmt.org/europarl/).
 
 ## Usage
 
@@ -31,7 +31,7 @@ println(sen)
 You can specify your own non-breaking prefixes file:
 
 ```julia
-sen = Sentencize.split_sentence("This is an example.", prefix_file="my_prefixes.txt", lang=missing)
+sen = Sentencize.split_sentence("This is an example.", prefix_file="my_prefixes.txt", lang=nothing)
 ```
 
 Or even pass the prefixes as a dictionary:

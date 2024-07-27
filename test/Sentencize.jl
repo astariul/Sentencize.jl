@@ -10,7 +10,7 @@
     @test "test-prefix" in keys(ss.non_breaking_prefixes) &&
           "Apr" in keys(ss.non_breaking_prefixes)        # English is also loaded
 
-    ss = Prefixes(Dict("test-prefix" => Sentencize.default), lang = missing)
+    ss = Prefixes(Dict("test-prefix" => Sentencize.default), lang = nothing)
     @test "test-prefix" in keys(ss.non_breaking_prefixes) &&
           !("Apr" in keys(ss.non_breaking_prefixes))
 
@@ -18,7 +18,7 @@
     @test "another-test-prefix" in keys(ss.non_breaking_prefixes) &&
           "Apr" in keys(ss.non_breaking_prefixes)
 
-    ss = Prefixes(prefix_file = "test.txt", lang = missing)
+    ss = Prefixes(prefix_file = "test.txt", lang = nothing)
     @test "another-test-prefix" in keys(ss.non_breaking_prefixes) &&
           !("Apr" in keys(ss.non_breaking_prefixes))
 
@@ -28,7 +28,7 @@
           "test-prefix" in keys(ss.non_breaking_prefixes)
 
     ss = Prefixes(
-        Dict("test-prefix" => Sentencize.default), prefix_file = "test.txt", lang = missing)
+        Dict("test-prefix" => Sentencize.default), prefix_file = "test.txt", lang = nothing)
     @test "another-test-prefix" in keys(ss.non_breaking_prefixes) &&
           !("Apr" in keys(ss.non_breaking_prefixes)) &&
           "test-prefix" in keys(ss.non_breaking_prefixes)
@@ -40,6 +40,11 @@
           "test-prefix" in keys(ss.non_breaking_prefixes)
 
     @test_throws ArgumentError Prefixes(lang = "some-weird-language")
+
+    ## Test non-string prefix 
+    ss = Prefixes(Dict(strip(" test-prefix") => Sentencize.default), lang = nothing)
+    @test "test-prefix" in keys(ss.non_breaking_prefixes) &&
+          !("Apr" in keys(ss.non_breaking_prefixes))
 end
 
 @testset "split_sentence" begin
@@ -103,6 +108,12 @@ end
 
     # Custom prefixes
     @test split_sentence("Hello. Prefix1. Prefix2. Hello again. Good bye.",
+        prefixes = Dict("Prefix1" => Sentencize.default, "#Hello" => Sentencize.default,
+            "Prefix2" => Sentencize.default)) ==
+          ["Hello.", "Prefix1. Prefix2. Hello again.", "Good bye."]
+
+    ## Different string types
+    @test split_sentence(strip(" Hello. Prefix1. Prefix2. Hello again. Good bye. "),
         prefixes = Dict("Prefix1" => Sentencize.default, "#Hello" => Sentencize.default,
             "Prefix2" => Sentencize.default)) ==
           ["Hello.", "Prefix1. Prefix2. Hello again.", "Good bye."]
