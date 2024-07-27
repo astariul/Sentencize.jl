@@ -67,11 +67,8 @@ end
 
 @enum PrefixType default numeric_only
 
-struct Prefixes{T<:AbstractString}
-    non_breaking_prefixes::Dict{T,PrefixType}
-
-    """
-    Prefixes(prefixes::Dict{T,PrefixType}=Dict{String,PrefixType}(); prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}=nothing) where {T<:AbstractString}
+"""
+Prefixes(prefixes::Dict{T,PrefixType}=Dict{String,PrefixType}(); prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en") where {T<:AbstractString}
 
 Constructs `Prefixes`.
 
@@ -80,7 +77,10 @@ Constructs `Prefixes`.
 - `prefix_file::Union{String,Nothing}=nothing`: Optional. A path to a file containing non-breaking prefixes to add to provided `prefixes`.
 - `lang::AbstractString="en"`: Optional. The language of the non-breaking prefixes (see `?SUPPORTED_LANG` for available languages) to be added to `prefixes`.
 """
-    function Prefixes(prefixes::Dict{T,PrefixType}=Dict{String,PrefixType}(); prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}=nothing) where {T<:AbstractString}
+struct Prefixes{T<:AbstractString}
+    non_breaking_prefixes::Dict{T,PrefixType}
+
+    function Prefixes(prefixes::Dict{T,PrefixType}=Dict{String,PrefixType}(); prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en") where {T<:AbstractString}
 
         if !isnothing(lang)
             if !(lang in SUPPORTED_LANG)
@@ -103,10 +103,6 @@ Constructs `Prefixes`.
         new{T}(prefixes)
     end
 end
-
-
-
-
 
 function _basic_sentence_breaks(text::AbstractString)
     # Non-period end of sentence markers (?!) followed by sentence starters
@@ -160,7 +156,7 @@ end
 
 
 """
-    split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,PrefixType}=Dict{String,PrefixType}(), prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}=nothing)
+    split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,PrefixType}=Dict{String,PrefixType}(), prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en")
 
 Splits a `text` into sentences.
 
@@ -168,7 +164,7 @@ Splits a `text` into sentences.
 - `text::AbstractString`: The text to split into sentences.
 - `prefixes::Dict{<:AbstractString,PrefixType}`: Optional. A dictionary of non-breaking prefixes.
 - `prefix_file::Union{String,Nothing}`: Optional. A path to a file containing non-breaking prefixes to add to provided `prefixes`.
-- `lang::Union{String,Nothing}`: Optional. The language of the non-breaking prefixes (see `?SUPPORTED_LANG` for available languages) to be added to `prefixes`.
+- `lang::Union{String,Nothing}`: Optional. The language of the non-breaking prefixes (see `?SUPPORTED_LANG` for available languages) to be added to `prefixes` Default is "en" (=English).
 
 # Examples
 ```julia
@@ -176,7 +172,7 @@ split_sentence("This is a paragraph. It contains several sentences. \"But why,\"
 # Output: ["This is a paragraph.", "It contains several sentences.", "\"But why,\" you ask?"]
 ```
 """
-function split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,PrefixType}=Dict{String,PrefixType}(), prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}=nothing)
+function split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,PrefixType}=Dict{String,PrefixType}(), prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en")
     if text == ""
         return []
     end

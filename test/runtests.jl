@@ -42,6 +42,11 @@ using Test
 
       @test_throws ArgumentError Prefixes(lang="some-weird-language")
 
+      ## Test non-string prefix 
+      ss = Prefixes(Dict(strip(" test-prefix") => Sentencize.default), lang=nothing)
+      @test "test-prefix" in keys(ss.non_breaking_prefixes) &&
+            !("Apr" in keys(ss.non_breaking_prefixes))
+
 
       # split sentences tests
 
