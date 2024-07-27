@@ -40,9 +40,8 @@ const SUPPORTED_LANG = ["ca", "cs", "da", "de", "el", "en", "es", "fi", "fr",
     "hu", "is", "it", "lt", "lv", "nl", "no", "pl", "pt",
     "ro", "ru", "sk", "sl", "sv", "tr"]
 
-
 function _load_prefix_file(T::Type{<:AbstractString}, pfile)
-    nb_prefixes = Dict{T,PrefixType}()
+    nb_prefixes = Dict{T, PrefixType}()
     open(pfile) do file
         for line in eachline(file)
             if occursin("#NUMERIC_ONLY#", line)
@@ -64,7 +63,6 @@ function _load_prefix_file(T::Type{<:AbstractString}, pfile)
     return nb_prefixes
 end
 
-
 @enum PrefixType default numeric_only
 
 """
@@ -77,18 +75,21 @@ Constructs `Prefixes`.
 - `prefix_file::Union{String,Nothing}=nothing`: Optional. A path to a file containing non-breaking prefixes to add to provided `prefixes`.
 - `lang::AbstractString="en"`: Optional. The language of the non-breaking prefixes (see `?SUPPORTED_LANG` for available languages) to be added to `prefixes`.
 """
-struct Prefixes{T<:AbstractString}
-    non_breaking_prefixes::Dict{T,PrefixType}
+struct Prefixes{T <: AbstractString}
+    non_breaking_prefixes::Dict{T, PrefixType}
 
-    function Prefixes(prefixes::Dict{T,PrefixType}=Dict{String,PrefixType}(); prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en") where {T<:AbstractString}
-
+    function Prefixes(prefixes::Dict{T, PrefixType} = Dict{String, PrefixType}();
+            prefix_file::Union{String, Nothing} = nothing,
+            lang::Union{String, Nothing} = "en") where {T <: AbstractString}
         if !isnothing(lang)
             if !(lang in SUPPORTED_LANG)
                 throw(ArgumentError("Unsupported language. Use a supported language ($SUPPORTED_LANG). " *
                                     "You can also provide your own non_breaking_prefixes file with the " *
                                     "keyword argument `prefix_file`."))
             else
-                merge!(prefixes, _load_prefix_file(T, joinpath(@__DIR__, "non_breaking_prefixes/$lang.txt")))
+                merge!(prefixes,
+                    _load_prefix_file(
+                        T, joinpath(@__DIR__, "non_breaking_prefixes/$lang.txt")))
             end
         end
 
@@ -109,21 +110,24 @@ function _basic_sentence_breaks(text::AbstractString)
     text = replace(text, r"([?!]) +(['\"([\u00bf\u00A1\p{Pi}]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
 
     # Multi-dots followed by sentence starters
-    text = replace(text, r"(\.[\.]+) +(['\"([\u00bf\u00A1\p{Pi}]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
+    text = replace(
+        text, r"(\.[\.]+) +(['\"([\u00bf\u00A1\p{Pi}]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
 
     # Add breaks for sentences that end with some sort of punctuation inside a quote or parenthetical and are
     # followed by a possible sentence starter punctuation and upper case
-    text = replace(text, r"([?!\.][\ ]*['\")\]\p{Pf}]+) +(['\"([\u00bf\u00A1\p{Pi}]*[\ ]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
+    text = replace(text,
+        r"([?!\.][\ ]*['\")\]\p{Pf}]+) +(['\"([\u00bf\u00A1\p{Pi}]*[\ ]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
 
     # Add breaks for sentences that end with some sort of punctuation and are followed by a sentence starter punctuation
     # and upper case
-    text = replace(text, r"([?!\.]) +(['\"[\u00bf\u00A1\p{Pi}]+[\ ]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
+    text = replace(
+        text, r"([?!\.]) +(['\"[\u00bf\u00A1\p{Pi}]+[\ ]*[\p{Lu}\p{Lo}])" => s"\1\n\2")
 
     return text
 end
 
-
-function _is_prefix_honorific(prefix::AbstractString, starting_punct::AbstractString, non_breaking_prefixes::Dict{<:AbstractString,PrefixType})
+function _is_prefix_honorific(prefix::AbstractString, starting_punct::AbstractString,
+        non_breaking_prefixes::Dict{<:AbstractString, PrefixType})
     # Check if \\1 is a known honorific and \\2 is empty.
     if !isempty(prefix)
         if prefix in keys(non_breaking_prefixes)
@@ -137,8 +141,9 @@ function _is_prefix_honorific(prefix::AbstractString, starting_punct::AbstractSt
     return false
 end
 
-
-function _is_numeric(prefix::AbstractString, starting_punct::AbstractString, next_word::AbstractString, non_breaking_prefixes::Dict{<:AbstractString,PrefixType})
+function _is_numeric(
+        prefix::AbstractString, starting_punct::AbstractString, next_word::AbstractString,
+        non_breaking_prefixes::Dict{<:AbstractString, PrefixType})
     # The next word has a bunch of initial quotes, maybe a space, then either upper case or a number.
     if !isempty(prefix)
         if prefix in keys(non_breaking_prefixes)
@@ -153,7 +158,6 @@ function _is_numeric(prefix::AbstractString, starting_punct::AbstractString, nex
     end
     return false
 end
-
 
 """
     split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,PrefixType}=Dict{String,PrefixType}(), prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en")
@@ -172,19 +176,21 @@ split_sentence("This is a paragraph. It contains several sentences. \"But why,\"
 # Output: ["This is a paragraph.", "It contains several sentences.", "\"But why,\" you ask?"]
 ```
 """
-function split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,PrefixType}=Dict{String,PrefixType}(), prefix_file::Union{String,Nothing}=nothing, lang::Union{String,Nothing}="en")
+function split_sentence(text::AbstractString;
+        prefixes::Dict{<:AbstractString, PrefixType} = Dict{String, PrefixType}(),
+        prefix_file::Union{String, Nothing} = nothing, lang::Union{String, Nothing} = "en")
     if text == ""
         return []
     end
 
-    pf = Prefixes(prefixes, prefix_file=prefix_file, lang=lang)
+    pf = Prefixes(prefixes, prefix_file = prefix_file, lang = lang)
 
     text = _basic_sentence_breaks(text)
 
     # Special punctuation cases : check all remaining periods
     words = split(text, r" +")
     text = ""
-    for i in 1:length(words)-1
+    for i in 1:(length(words) - 1)
         m = match(r"([\w\.\-]*)(['\"\)\]\%\p{Pf}]*)(\.+)$", words[i])
 
         if !isnothing(m)
@@ -195,8 +201,10 @@ function split_sentence(text::AbstractString; prefixes::Dict{<:AbstractString,Pr
                 # Not breaking
             elseif !isnothing(match(r"(\.)[\p{Lu}\p{Lo}\-]+(\.+)$", words[i]))
                 # Not breaking - upper case acronym
-            elseif !isnothing(match(r"^([ ]*['\"([\u00bf\u00A1\p{Pi}]*[ ]*[\p{Lu}\p{Lo}0-9])", words[i+1]))
-                if !_is_numeric(prefix, starting_punct, words[i+1], pf.non_breaking_prefixes)
+            elseif !isnothing(match(
+                r"^([ ]*['\"([\u00bf\u00A1\p{Pi}]*[ ]*[\p{Lu}\p{Lo}0-9])", words[i + 1]))
+                if !_is_numeric(
+                    prefix, starting_punct, words[i + 1], pf.non_breaking_prefixes)
                     words[i] = words[i] * "\n"
                     # We always add a return for these unless we have a numeric non-breaker and a number start
                 end
